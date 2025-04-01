@@ -52,13 +52,16 @@ export default function ProFormaTool() {
     setResults({ grossRevenue, vacancyLoss, effectiveRevenue, opex, noi, debtService, cashFlow });
   };
 
-  const exportPDF = () => {
-  if (resultRef.current) {
-    try {
-      html2pdf().from(resultRef.current).set({ margin: 1, filename: 'proforma.pdf' }).save();
-    } catch (err) {
-      console.error("PDF export failed:", err);
-    }
+ const exportPDF = () => {
+  if (!resultRef?.current) {
+    console.warn("No result to export.");
+    return;
+  }
+
+  try {
+    html2pdf().from(resultRef.current).set({ margin: 1, filename: 'proforma.pdf' }).save();
+  } catch (err) {
+    console.error("PDF export failed:", err);
   }
 };
 
