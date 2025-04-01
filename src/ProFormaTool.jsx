@@ -53,10 +53,14 @@ export default function ProFormaTool() {
   };
 
   const exportPDF = () => {
-    if (resultRef.current) {
+  if (resultRef.current) {
+    try {
       html2pdf().from(resultRef.current).set({ margin: 1, filename: 'proforma.pdf' }).save();
+    } catch (err) {
+      console.error("PDF export failed:", err);
     }
-  };
+  }
+};
 
   const saveScenario = () => {
     if (!title || !results) return alert("Please add a title and calculate results first");
