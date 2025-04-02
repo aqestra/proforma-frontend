@@ -50,19 +50,21 @@ export default function ProFormaTool() {
     setResults({ grossRevenue, vacancyLoss, effectiveRevenue, opex, noi, debtService, cashFlow });
   };
 
-const exportPDF = async () => {
-  if (typeof window === "undefined" || !resultRef?.current) {
-    console.warn("PDF export skipped: not in browser or resultRef is null.");
-    return;
-  }
+  const exportPDF = async () => {
+    console.log("Export PDF triggered");
 
-  try {
-    const html2pdf = (await import("html2pdf.js")).default;
-    html2pdf().from(resultRef.current).set({ margin: 1, filename: 'proforma.pdf' }).save();
-  } catch (error) {
-    console.error("PDF export failed:", error);
-  }
-};
+    if (typeof window === "undefined" || !resultRef?.current) {
+      console.warn("PDF export skipped: not in browser or resultRef is null.");
+      return;
+    }
+
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+      html2pdf().from(resultRef.current).set({ margin: 1, filename: 'proforma.pdf' }).save();
+    } catch (error) {
+      console.error("PDF export failed:", error);
+    }
+  };
 
   const saveScenario = () => {
     if (!title || !results) return alert("Please add a title and calculate results first");
@@ -122,7 +124,7 @@ const exportPDF = async () => {
           </select>
         </div>
 
-        {results && (
+        {results ? (
           <div ref={resultRef} style={{ marginTop: '2rem', background: '#f9f9f9', padding: '1rem', borderRadius: '8px' }}>
             <h2>Pro Forma Results</h2>
             <p><strong>Gross Revenue:</strong> ${results.grossRevenue.toFixed(2)}</p>
@@ -134,7 +136,7 @@ const exportPDF = async () => {
             <p><strong>Cash Flow:</strong> ${results.cashFlow.toFixed(2)}</p>
             <button onClick={exportPDF} style={{ marginTop: '1rem' }}>Export PDF</button>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
