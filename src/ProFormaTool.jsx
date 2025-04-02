@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { exportPDF } from "./utils/exportPDF";
 
 const API_BASE = "https://proforma-backend.onrender.com/api/proforma";
 
@@ -50,18 +51,8 @@ export default function ProFormaTool() {
     setResults({ grossRevenue, vacancyLoss, effectiveRevenue, opex, noi, debtService, cashFlow });
   };
 
-  const downloadPDF = async (ref) => {
-    if (typeof window === "undefined" || !ref?.current) {
-      console.warn("PDF export skipped: not in browser or ref is null.");
-      return;
-    }
-
-    try {
-      const html2pdf = (await import("html2pdf.js")).default;
-      html2pdf().from(ref.current).set({ margin: 1, filename: 'proforma.pdf' }).save();
-    } catch (error) {
-      console.error("PDF export failed:", error);
-    }
+  const handleExportPDF = () => {
+    exportPDF(resultRef);
   };
 
   const saveScenario = () => {
@@ -132,7 +123,7 @@ export default function ProFormaTool() {
             <p><strong>Net Operating Income (NOI):</strong> ${results.noi.toFixed(2)}</p>
             <p><strong>Debt Service:</strong> ${results.debtService.toFixed(2)}</p>
             <p><strong>Cash Flow:</strong> ${results.cashFlow.toFixed(2)}</p>
-            <button onClick={() => downloadPDF(resultRef)} style={{ marginTop: '1rem' }}>Export PDF</button>
+            <button onClick={handleExportPDF} style={{ marginTop: '1rem' }}>Export PDF</button>
           </div>
         )}
       </div>
