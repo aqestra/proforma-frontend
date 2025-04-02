@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import html2pdf from "html2pdf.js";
 
 const API_BASE = "https://proforma-backend.onrender.com/api/proforma";
 
@@ -51,12 +50,13 @@ export default function ProFormaTool() {
     setResults({ grossRevenue, vacancyLoss, effectiveRevenue, opex, noi, debtService, cashFlow });
   };
 
-  const exportPDF = () => {
+  const exportPDF = async () => {
     if (!resultRef?.current) {
       console.warn("PDF export skipped: resultRef is null.");
       return;
     }
     try {
+      const html2pdf = (await import("html2pdf.js")).default;
       html2pdf().from(resultRef.current).set({ margin: 1, filename: 'proforma.pdf' }).save();
     } catch (error) {
       console.error("PDF export failed:", error);
